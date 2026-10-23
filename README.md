@@ -48,17 +48,26 @@ Students and educators can explore procedural physics, cardiac biomechanics, ele
 
 ### 1. "Text-to-3D Lab" Dynamic Simulation Builder
 * **Natural Language to 3D**: Enter prompts such as *"Create a physics lab simulation showing gravity on Mars vs. Earth with two bounceable spheres"* or *"Build an electrical circuit with a 12V battery and glowing bulb"*.
+* **Dual Gemma Engine Router**: Toggle between **Google AI Studio Free Tier** (zero setup) and **Local Open-Weights Gemma 2 (9B / 2B via Ollama)** for 100% offline, privacy-preserving execution with zero API fees.
 * **Spatial Code Generation**: Gemma acts as a code generator and spatial orchestrator, outputting structured 3D component graphs, PBR materials, rigid-body masses, initial velocities, restitution coefficients, and Socratic learning prompts.
 * **Instant Calibration**: New simulations mount seamlessly in the running WebGL/WebXR session with zero page reloads.
 
 ### 2. Spatial AI Avatar Mentor ("Dr. Nova")
-* **In-World 3D NPC**: Positioned at the edge of the experiment table with a procedural cyber-chassis, articulated floating spherical head, rotating gyroscopic rings, and a speech-reactive illuminated visor.
+* **In-World 3D NPC**: Positioned at the edge of the experiment table with a polished white ceramic and chrome physical chassis, articulated floating spherical head, rotating gyroscopic rings, and a speech-reactive illuminated visor.
 * **Socratic Guidance**: Rather than feeding direct answers, Dr. Nova analyzes live simulation telemetry (velocities, kinetic/potential energy ratios, circuit continuity, valve pressures) and poses probing questions.
 * **Multimodal Voice Interaction**:
   - **Speech-to-Text (STT)**: Hands-free voice inquiry using the Web Speech API.
   - **Text-to-Speech (TTS)**: Unary audio synthesis with `gemini-3.8-flash-lite-tts` returning high-fidelity WAV speech with automatic browser speech synthesis fallback.
 
-### 3. Procedural Multi-Domain Simulation Laboratories
+### 3. Photorealistic Physical Rendering Pipeline (`MeshPhysicalMaterial`)
+* **Domain-Specialized PBR Shaders**:
+  - **Aviation Titanium & Superalloys**: `metalness: 0.96`, `roughness: 0.14`, clearcoat finish, and procedural brushed lathe normal map generating authentic radial specular reflections.
+  - **Living Myocardial Tissue**: Biological moist clearcoat (`0.75`), organic muscle striation normal maps, and simulated subsurface depth.
+  - **Optical Glass Envelope & Hot Tungsten Filament**: Refractive glass envelope (`transmission: 0.94`, `ior: 1.52`) housing a procedural double-helix tungsten coil emitting realistic dynamic point light.
+  - **Dark Granite Optical Calibration Bench**: High-anisotropy granite grain with laser-etched metric coordinate grids that remain razor-sharp at shallow grazing angles.
+* **3-Point Studio Lighting Rig**: Warm key light with PCF soft shadows, cool sky/ground hemisphere ambient fill, and a cyan silhouette rim light ensuring realistic depth separation.
+
+### 4. Procedural Multi-Domain Simulation Laboratories
 Every laboratory subject is procedurally constructed as a composite **3–12 part hierarchy** (`THREE.Group`) across primary silhouette, secondary read, and accent trim:
 
 * **🪐 Planetary Gravity & Elastic Ballistics**:
@@ -94,14 +103,16 @@ Every laboratory subject is procedurally constructed as a composite **3–12 par
 
 ---
 
-## 🎧 100% Procedural Web Audio Engine
+## 🎧 3D Spatial Audio & Procedural Sound Engine (HRTF Binaural Audio)
 
-In compliance with strict zero-404 asset engineering directives, **all audio is synthesized procedurally in real-time** via the Web Audio API without downloading external `.mp3` or `.wav` files:
-- **Ballistic Bounce**: Frequency-modulated decaying sine wave pitched proportionally to impact velocity and body mass.
-- **Cardiac Lub-Dub**: Filtered dual resonant pulse ($55\text{ Hz}$ then $75\text{ Hz}$) triggered at peak systolic contraction.
-- **Electrical Click & Spark**: High-frequency bandpass-filtered transient bursts when closing the knife switch.
-- **Turbine Spooling**: Harmonically filtered sawtooth oscillator tuned dynamically to the throttle RPM ratio.
-- **Avatar Chime**: Tri-tone harmonic chord ($D_5$, $A_5$, $D_6$) on component selection.
+In compliance with strict zero-404 asset engineering directives, **all audio is synthesized procedurally in real-time** via the Web Audio API with full **3D Spatial Positional Audio** using the Head-Related Transfer Function (`HRTF`) panning model:
+
+* **Real-Time 3D Listener Tracking**: The Web Audio `AudioListener` position and orientation vectors are continuously synchronized with the active Three.js camera or WebXR VR headset pose (`positionX/Y/Z`, `forwardX/Y/Z`, `upX/Y/Z`).
+* **Physics Impact Localization**: Spheres colliding with the pedestal emit 3D spatial impacts (`playSpatialBounce`) at their exact $(x, y, z)$ point of contact, with volume and pitch modulated by impact velocity ($v = \sqrt{2gh}$) and mass.
+* **Cardiac Pulse Stethoscope Effect**: The heart's systolic and diastolic lub-dub ($55\text{ Hz}$ / $75\text{ Hz}$) originates positionally from the anatomical chest cavity (`{ x: 0, y: 1.4, z: 0 }`), growing louder as students lean in.
+* **Knife Switch & Spark Transients**: Electrical contact snap transients emanate positionally from the circuit switch terminal (`{ x: -0.2, y: 0.4, z: -0.6 }`).
+* **Continuous Turbofan Spatial Humming**: The jet engine spool loop is bound to the engine's 3D coordinates (`{ x: 0, y: 1.2, z: 0 }`), exhibiting smooth inverse distance rolloff and binaural stereo separation as the user orbits or pans.
+* **Avatar Mentor Positional Voice**: Dr. Nova's speech audio is routed directly through a dedicated spatial panner node at the avatar's pedestal (`{ x: -2.8, y: 1.4, z: 0.2 }`), giving users an authentic sense of an in-room mentor speaking from their left.
 
 ---
 

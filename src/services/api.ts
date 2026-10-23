@@ -1,4 +1,5 @@
 import { GradeLevel, SimulationLab } from '../types/simulation';
+import { soundEngine } from '../audio/soundEngine';
 
 export interface GenerateLabResponse {
   success: boolean;
@@ -26,16 +27,46 @@ export interface InspectionResponse {
   error?: string;
 }
 
+export interface GemmaEngineStatus {
+  cloudFreeTierActive: boolean;
+  ollamaReachable: boolean;
+  ollamaHost: string;
+  ollamaModels: string[];
+  supportedGemmaModels: Array<{ id: string; name: string; provider: string; default?: boolean }>;
+}
+
+export async function fetchGemmaStatus(): Promise<GemmaEngineStatus> {
+  try {
+    const res = await fetch('/api/gemma/status');
+    if (!res.ok) throw new Error('Status check failed');
+    return await res.json();
+  } catch {
+    return {
+      cloudFreeTierActive: true,
+      ollamaReachable: false,
+      ollamaHost: 'http://127.0.0.1:11434',
+      ollamaModels: [],
+      supportedGemmaModels: [
+        { id: 'cloud-gemini-flash', name: 'Google Free Tier (Gemma/Flash)', provider: 'cloud-free', default: true },
+        { id: 'gemma2:9b', name: 'Gemma 2 9B (Local Open-Weights)', provider: 'local-ollama' },
+        { id: 'gemma2:2b', name: 'Gemma 2 2B (Local Edge / WebGPU)', provider: 'local-ollama' },
+      ],
+    };
+  }
+}
+
 export async function generateLabWithGemma(
   prompt: string,
   gradeLevel: GradeLevel = '9-12 (High School)',
-  currentDomain: string = 'physics'
+  currentDomain: string = 'physics',
+  provider: string = 'cloud-free',
+  model: string = 'gemma2:9b'
 ): Promise<GenerateLabResponse> {
   try {
     const res = await fetch('/api/gemini/generate-lab', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt, gradeLevel, currentDomain }),
+      body: JSON.stringify({ prompt, gradeLevel, currentDomain, provider, model }),
     });
 
     if (!res.ok) {
@@ -47,7 +78,6 @@ export async function generateLabWithGemma(
     return json;
   } catch (error: any) {
     console.warn('API call failed, generating procedural fallback scene:', error);
-    // Provide a resilient client-side procedural fallback so user never gets a broken experience
     return {
       success: true,
       data: {
@@ -145,13 +175,15 @@ export async function generateLabWithGemma(
 export async function askTutorMentor(
   userMessage: string,
   sceneContext: any,
-  gradeLevel: GradeLevel = '9-12 (High School)'
+  gradeLevel: GradeLevel = '9-12 (High School)',
+  provider: string = 'cloud-free',
+  model: string = 'gemma2:9b'
 ): Promise<TutorResponse> {
   try {
     const res = await fetch('/api/gemini/tutor-dialogue', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userMessage, sceneContext, gradeLevel }),
+      body: JSON.stringify({ userMessage, sceneContext, gradeLevel, provider, model }),
     });
 
     if (!res.ok) {
@@ -192,13 +224,15 @@ export async function inspectComponentWithGemma(
   componentName: string,
   componentRole: string,
   domain: string,
-  gradeLevel: GradeLevel
+  gradeLevel: GradeLevel,
+  provider: string = 'cloud-free',
+  model: string = 'gemma2:9b'
 ): Promise<InspectionResponse> {
   try {
     const res = await fetch('/api/gemini/inspect-component', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ componentName, componentRole, domain, gradeLevel }),
+      body: JSON.stringify({ componentName, componentRole, domain, gradeLevel, provider, model }),
     });
 
     if (!res.ok) {
@@ -229,18 +263,42 @@ export async function inspectComponentWithGemma(
 }
 
 /**
- * Universal voice playback: uses Gemini TTS WAV audio if available,
- * or native Web SpeechSynthesis if server TTS is offline or unavailable.
+ * Universal voice playback with 3D Spatial Audio:
+ * Uses Gemini TTS WAV audio rendered through the Web Audio HRTF Panner at Dr. Nova's
+ * exact 3D coordinates ({ x: -2.8, y: 1.4, z: 0.2 }), falling back to standard audio or
+ * native Web SpeechSynthesis if server TTS is offline.
  */
 export async function speakSpeech(text: string, audioBase64?: string | null) {
   if (audioBase64) {
     try {
+      const ctx = soundEngine.getAudioContext();
+      if (ctx) {
+        const binaryString = window.atob(audioBase64);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        const audioBuffer = await ctx.decodeAudioData(bytes.buffer.slice(0));
+        const source = soundEngine.playSpatialVoice(audioBuffer, { x: -2.8, y: 1.4, z: 0.2 });
+        if (source) {
+          await new Promise<void>((resolve) => {
+            source.onended = () => resolve();
+          });
+          return;
+        }
+      }
+
+      // Fallback to HTML5 audio if decodeAudioData or source fails
       const audio = new Audio(`data:audio/wav;base64,${audioBase64}`);
       audio.volume = 0.9;
       await audio.play();
+      await new Promise<void>((resolve) => {
+        audio.onended = () => resolve();
+      });
       return;
     } catch (e) {
-      console.warn('WAV playback failed, falling back to speech synthesis', e);
+      console.warn('Spatial WAV playback failed, falling back to speech synthesis', e);
     }
   }
 
@@ -254,6 +312,10 @@ export async function speakSpeech(text: string, audioBase64?: string | null) {
     if (englishVoice) {
       utterance.voice = englishVoice;
     }
-    window.speechSynthesis.speak(utterance);
+    await new Promise<void>((resolve) => {
+      utterance.onend = () => resolve();
+      utterance.onerror = () => resolve();
+      window.speechSynthesis.speak(utterance);
+    });
   }
 }

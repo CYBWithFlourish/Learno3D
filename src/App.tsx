@@ -11,6 +11,7 @@ import {
   fetchGeminiTTS,
   speakSpeech,
   inspectComponentWithGemma,
+  fetchGemmaStatus,
 } from './services/api';
 import { soundEngine } from './audio/soundEngine';
 
@@ -29,6 +30,10 @@ export default function App() {
   const [explodedAmount, setExplodedAmount] = useState(0);
   const [throttleAmount, setThrottleAmount] = useState(0.5);
   const [switchClosed, setSwitchClosed] = useState(true);
+
+  // Gemma Engine Provider State
+  const [gemmaProvider, setGemmaProvider] = useState<string>('cloud-free');
+  const [ollamaReachable, setOllamaReachable] = useState<boolean>(false);
 
   // Live Telemetry
   const [telemetry, setTelemetry] = useState({
@@ -58,7 +63,7 @@ export default function App() {
   const [isVRSupported, setIsVRSupported] = useState(false);
   const [isVRModalOpen, setIsVRModalOpen] = useState(false);
 
-  // 1. Initialize WebGL Scene Once
+  // 1. Initialize WebGL Scene & Check Engine Status
   useEffect(() => {
     if (!mountRef.current) return;
 
@@ -71,12 +76,16 @@ export default function App() {
       });
     }
 
+    // Check Gemma local/cloud status
+    fetchGemmaStatus().then(status => {
+      setOllamaReachable(status.ollamaReachable);
+    });
+
     const scene = new SimulationScene(mountRef.current, {
       onSelectComponent: comp => {
         setSelectedComponent(comp);
         setQuizResult(null);
         if (comp) {
-          // Trigger Socratic guidance on the selected component
           handleSelectComponentSocratic(comp);
         }
       },
@@ -85,7 +94,7 @@ export default function App() {
       },
       onSimulationEvent: (event, details) => {
         if (event === 'impact' && details?.speed > 4.0) {
-          // High speed impact event
+          // Impact telemetry event
         }
       },
     });
@@ -134,7 +143,7 @@ export default function App() {
   const handleSelectComponentSocratic = async (comp: SimulationComponent) => {
     try {
       sceneRef.current?.setAvatarSpeaking(true);
-      const res = await inspectComponentWithGemma(comp.name, comp.description, currentLab.domain, gradeLevel);
+      const res = await inspectComponentWithGemma(comp.name, comp.description, currentLab.domain, gradeLevel, gemmaProvider);
       if (res.data?.summary) {
         const mentorText = `${comp.name}: ${res.data.summary} ${res.data.quizQuestion || ''}`;
         setTutorMessages(prev => [
@@ -177,7 +186,7 @@ export default function App() {
         },
       };
 
-      const res = await askTutorMentor(userMessage, sceneContext, gradeLevel);
+      const res = await askTutorMentor(userMessage, sceneContext, gradeLevel, gemmaProvider);
       const replyText = res.reply || 'Keep experimenting to verify your hypothesis.';
 
       const mentorMsg: TutorMessage = {
@@ -215,7 +224,7 @@ export default function App() {
   const handleGenerateLab = async (promptText: string) => {
     setIsGeneratingLab(true);
     try {
-      const res = await generateLabWithGemma(promptText, gradeLevel, currentLab.domain);
+      const res = await generateLabWithGemma(promptText, gradeLevel, currentLab.domain, gemmaProvider);
       if (res.data) {
         const newLab: SimulationLab = {
           id: `custom-lab-${Date.now()}`,
@@ -311,6 +320,11 @@ export default function App() {
     soundEngine.setMuted(next);
   };
 
+  const handleToggleGemmaProvider = () => {
+    const next = gemmaProvider === 'cloud-free' ? 'local-ollama' : 'cloud-free';
+    setGemmaProvider(next);
+  };
+
   // Launch WebXR session
   const handleStartWebXR = async () => {
     if (sceneRef.current && navigator.xr) {
@@ -353,9 +367,12 @@ export default function App() {
         onReset={handleReset}
         onEnterVR={() => setIsVRModalOpen(true)}
         isVRSupported={isVRSupported}
+        gemmaProvider={gemmaProvider}
+        onToggleGemmaProvider={handleToggleGemmaProvider}
+        ollamaReachable={ollamaReachable}
       />
 
-      {/* Architectural Blueprint Crosshairs (71UI Architectural Signature Move) */}
+      {/* Architectural Blueprint Crosshairs */}
       <div className="absolute top-16 left-4 text-[10px] font-mono text-[var(--color-hairline-strong)] pointer-events-none z-10 opacity-70">
         + [DATUM 0,0]
       </div>

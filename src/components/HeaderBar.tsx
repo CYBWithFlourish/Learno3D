@@ -1,5 +1,5 @@
 import React from 'react';
-import { Volume2, VolumeX, RotateCcw, Glasses, Layers, ChevronDown } from 'lucide-react';
+import { Volume2, VolumeX, RotateCcw, Glasses, Layers, ChevronDown, Cpu } from 'lucide-react';
 import { GradeLevel, SimulationLab } from '../types/simulation';
 
 interface HeaderBarProps {
@@ -13,6 +13,9 @@ interface HeaderBarProps {
   onReset: () => void;
   onEnterVR: () => void;
   isVRSupported: boolean;
+  gemmaProvider: string;
+  onToggleGemmaProvider: () => void;
+  ollamaReachable: boolean;
 }
 
 export const HeaderBar: React.FC<HeaderBarProps> = ({
@@ -26,6 +29,9 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
   onReset,
   onEnterVR,
   isVRSupported,
+  gemmaProvider,
+  onToggleGemmaProvider,
+  ollamaReachable,
 }) => {
   return (
     <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between h-14 px-4 sm:px-6 bg-[var(--color-surface)]/90 border-b border-[var(--color-hairline)] backdrop-blur-md pointer-events-auto select-none">
@@ -69,8 +75,29 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
         })}
       </nav>
 
-      {/* Right Tool Group: Grade Level, Audio, Reset, VR */}
+      {/* Right Tool Group: Gemma Provider Toggle, Grade Level, Audio, Reset, VR */}
       <div className="flex items-center space-x-2">
+        {/* Gemma Engine Provider Pill Toggle */}
+        <button
+          onClick={onToggleGemmaProvider}
+          title={`Click to switch Gemma provider. Current: ${gemmaProvider === 'local-ollama' ? 'Local Gemma 2 (Ollama)' : 'Google Free Tier (Gemma/Flash)'}`}
+          className="hidden sm:flex items-center space-x-1.5 h-8 px-2.5 rounded-[10px] bg-[var(--color-surface-2)] border border-[var(--color-hairline-strong)] text-[12px] font-medium text-[var(--color-ink)] hover:text-[var(--color-ink-strong)] hover:bg-[var(--color-surface)] btn-71 focus-71 transition-colors"
+        >
+          <Cpu className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+          <span className="font-mono text-[11px]">
+            {gemmaProvider === 'local-ollama' ? 'Gemma 2: Ollama' : 'Gemma: Free Cloud'}
+          </span>
+          <span
+            className={`w-1.5 h-1.5 rounded-full ${
+              gemmaProvider === 'local-ollama'
+                ? ollamaReachable
+                  ? 'bg-emerald-400'
+                  : 'bg-amber-400'
+                : 'bg-sky-400'
+            }`}
+          />
+        </button>
+
         {/* Grade level dropdown (71UI 32px control) */}
         <div className="relative">
           <select
