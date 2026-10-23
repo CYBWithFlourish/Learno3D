@@ -1,10 +1,10 @@
-# Gemma Spatial XR — 3D Simulation & VR Learning Studio
+# Learno3D — Gemma Spatial XR Simulation & VR Learning Studio
 
 > **Virtual Reality (VR) and 3D Simulation Studio for Immersive Learning powered by Gemma as the Spatial Intelligence Engine.**
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Three.js](https://img.shields.io/badge/Three.js-r160+-black.svg?logo=three.js&logoColor=white)](https://threejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7.0.2-3178C6.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Three.js](https://img.shields.io/badge/Three.js-0.186.x-black.svg?logo=three.js&logoColor=white)](https://threejs.org/)
 [![WebXR](https://img.shields.io/badge/WebXR-Enabled-orange.svg)](https://immersiveweb.dev/)
 [![Tailwind CSS v4](https://img.shields.io/badge/TailwindCSS-v4-38B2AC.svg?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
@@ -141,21 +141,27 @@ In compliance with strict zero-404 asset engineering directives, **all audio is 
 ## 🛠️ Getting Started
 
 ### Prerequisites
-- **Node.js**: v18.x or higher
-- **npm**: v9.x or higher
+- **Node.js**: v18.x or higher (or **Bun** v1.0+)
+- **Package Manager**: npm v9.x or higher, pnpm, or **Bun**
 - **Gemini API Key**: Set in your environment via `GEMINI_API_KEY` (configured automatically in Google AI Studio)
 
 ### Installation
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/gemma-spatial-xr.git
-   cd gemma-spatial-xr
+   git clone https://github.com/cybwithflourish/Learno3D.git
+   cd Learno3D
    ```
 
-2. **Install dependencies:**
+2. **Install dependencies (Resolution & Peer-Dependency Handling):**
+   This project uses cutting-edge packages (**TypeScript 7.0.2**, **React 19**, and **Three.js 0.186.x**). To ensure smooth package resolution across package managers:
+
    ```bash
-   npm install
+   # Using npm (recommended with legacy peer deps for React 19 / TS 7):
+   npm install --legacy-peer-deps
+
+   # Or using Bun:
+   bun install
    ```
 
 3. **Configure Environment Variables:**
