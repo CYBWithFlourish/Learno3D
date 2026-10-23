@@ -35,15 +35,15 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
           <Layers className="w-4 h-4" />
         </div>
         <div className="flex flex-col">
-          <div className="flex items-center space-x-2">
-            <span className="text-[11px] font-mono font-medium tracking-[0.08em] text-[var(--color-ink-subtle)] uppercase">
-              Gemma Spatial
+          <div className="flex items-center space-x-1.5">
+            <span className="text-[14px] font-semibold text-[var(--color-ink-strong)] tracking-[-0.01em]">
+              Learno3D
             </span>
-            <span className="inline-flex items-center h-5 px-1.5 rounded-[6px] text-[12px] font-medium bg-[var(--color-info-fill)] text-[var(--color-on-info)] border border-[var(--color-hairline)]">
-              XR Studio
+            <span className="text-[11px] font-mono font-medium text-[var(--color-primary)]">
+              (Gemma Spatial XR)
             </span>
           </div>
-          <h1 className="text-[14px] font-medium text-[var(--color-ink-strong)] tracking-[-0.01em] line-clamp-1">
+          <h1 className="text-[12px] font-medium text-[var(--color-ink-subtle)] line-clamp-1">
             {currentLab.title}
           </h1>
         </div>

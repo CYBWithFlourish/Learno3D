@@ -1,4 +1,4 @@
-# Learno3D — Gemma Spatial XR Simulation & VR Learning Studio
+# Learno3D (Gemma Spatial XR) — 3D Simulation & VR Learning Studio
 
 > **Virtual Reality (VR) and 3D Simulation Studio for Immersive Learning powered by Gemma as the Spatial Intelligence Engine.**
 
@@ -12,7 +12,7 @@
 
 ## 🌟 Executive Overview
 
-**Gemma Spatial XR** combines open-source 3D WebXR frameworks with open-weights foundation models like **Gemma** to enable real-time, interactive, and intelligent 3D learning worlds without relying on proprietary cloud APIs, vendor lock-in, or heavy video-streaming fees.
+**Learno3D (Gemma Spatial XR)** combines open-source 3D WebXR frameworks with open-weights foundation models like **Gemma** to enable real-time, interactive, and intelligent 3D learning worlds without relying on proprietary cloud APIs, vendor lock-in, or heavy video-streaming fees.
 
 Students and educators can explore procedural physics, cardiac biomechanics, electrical engineering, and aerospace propulsion directly in their web browsers or in immersive VR headsets (Meta Quest 2/3/Pro, Apple Vision Pro, SteamVR). When curious about any dynamic scenario, they can speak or type to synthesize custom 3D simulations on the fly.
 
@@ -202,8 +202,32 @@ All Gemini model invocations execute securely on the server through `@google/gen
 
 ---
 
-## 📜 License
+## 📜 License & Governance
 
 This project is licensed under the **GNU General Public License v3.0 (GPLv3)**.
 
-You are free to copy, distribute, modify, and run this software provided that all modified versions and derivative works remain open source under the same GPLv3 terms. See the full [LICENSE](LICENSE) file for complete legal details.
+### Why GPLv3 Was Chosen for Learno3D
+
+Learno3D was designed from the ground up to demonstrate that next-generation spatial computing and interactive VR classrooms do not need to rely on proprietary closed-source engines, vendor lock-in, or expensive streaming gatekeepers. We selected the **GNU General Public License v3.0 (GPLv3)** for four core reasons:
+
+1. **Guaranteed Perpetual Open-Source Commons (Strong Copyleft)**:
+   - Education is a universal public good. Under GPLv3, any developer, university, or EdTech organization that forks, improves, or integrates Learno3D into larger platforms is legally obligated to release their source code and enhancements under the exact same open-source terms.
+   - This prevents proprietary software vendors from privatizing community-created 3D curriculum models, simulation engines, or Socratic avatar code.
+
+2. **Alignment with the Open-Weights & Open-Web Philosophy**:
+   - Just as open-weights models like **Gemma** empower developers to run spatial intelligence locally and openly, GPLv3 ensures the surrounding 3D orchestration software, physics bridges, and WebXR components remain freely inspectable, modifiable, and verifiable by the academic community.
+
+3. **Protection for Hardware & VR Device Users (Anti-Tivoization)**:
+   - GPLv3 includes specific protections preventing hardware manufacturers (such as VR headset vendors) from restricting users from installing modified versions of open-source software on their own physical devices. This ensures students and researchers have complete freedom to run Learno3D on Meta Quest, Apple Vision Pro, SteamVR, or custom WebXR hardware.
+
+4. **Express Patent Peace & Protection**:
+   - GPLv3 grants an explicit, royalty-free patent license from all contributors to all users, shielding open-source contributors and schools from predatory software patent litigation.
+
+---
+
+### Summary of Rights & Obligations
+
+- **You Are Free To**: Run the software commercially or non-commercially, study the source code, modify all simulation models, and distribute copies.
+- **Under the Condition That**: If you distribute modified versions or derivative works of Learno3D, you must provide full corresponding source code under the same GPLv3 license and clearly state your modifications.
+
+See the full [LICENSE](LICENSE) file for complete legal terms.
