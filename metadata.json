@@ -1,0 +1,6 @@
+{
+  "name": "Gemma Spatial XR - 3D Simulation & VR Learning Studio",
+  "description": "Virtual Reality (VR) and 3D simulation studio for immersive learning powered by Gemma spatial intelligence. Features Text-to-3D lab generation, interactive physics, anatomy, electrical circuits, mechanical engineering, and an AI avatar mentor.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
