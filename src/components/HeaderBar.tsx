@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Glasses, RotateCcw, Volume2, VolumeX, Maximize2, ShieldCheck, Atom } from 'lucide-react';
+import { Volume2, VolumeX, RotateCcw, Glasses, Layers, ChevronDown } from 'lucide-react';
 import { GradeLevel, SimulationLab } from '../types/simulation';
 
 interface HeaderBarProps {
@@ -28,86 +28,96 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
   isVRSupported,
 }) => {
   return (
-    <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-3 bg-neutral-950/80 border-b border-neutral-800/80 backdrop-blur-md pointer-events-auto">
+    <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between h-14 px-4 sm:px-6 bg-[var(--color-surface)]/90 border-b border-[var(--color-hairline)] backdrop-blur-md pointer-events-auto select-none">
       {/* Brand & Studio Title */}
       <div className="flex items-center space-x-3">
-        <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-sky-500/10 border border-sky-400/30 text-sky-400 shadow-sm shadow-sky-500/20">
-          <Atom className="w-5 h-5 animate-spin-slow" />
+        <div className="flex items-center justify-center w-8 h-8 rounded-[8px] bg-[var(--color-surface-2)] border border-[var(--color-hairline-strong)] text-[var(--color-primary)]">
+          <Layers className="w-4 h-4" />
         </div>
-        <div>
+        <div className="flex flex-col">
           <div className="flex items-center space-x-2">
-            <h1 className="text-sm font-bold tracking-tight text-white uppercase font-mono">
-              Gemma Spatial XR
-            </h1>
-            <span className="text-[10px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">
-              WebXR Studio
+            <span className="text-[11px] font-mono font-medium tracking-[0.08em] text-[var(--color-ink-subtle)] uppercase">
+              Gemma Spatial
+            </span>
+            <span className="inline-flex items-center h-5 px-1.5 rounded-[6px] text-[12px] font-medium bg-[var(--color-info-fill)] text-[var(--color-on-info)] border border-[var(--color-hairline)]">
+              XR Studio
             </span>
           </div>
-          <p className="text-xs text-neutral-400 line-clamp-1 max-w-[280px] sm:max-w-md">
+          <h1 className="text-[14px] font-medium text-[var(--color-ink-strong)] tracking-[-0.01em] line-clamp-1">
             {currentLab.title}
-          </p>
+          </h1>
         </div>
       </div>
 
-      {/* Preset Lab Switcher */}
-      <div className="hidden lg:flex items-center space-x-1.5 bg-neutral-900/90 p-1 rounded-xl border border-neutral-800">
+      {/* Preset Lab Segmented Switcher (71UI 32px segmented tabs) */}
+      <nav aria-label="Simulation Presets" className="hidden lg:flex items-center p-0.5 bg-[var(--color-canvas)] rounded-[10px] border border-[var(--color-hairline)]">
         {allLabs.map(lab => {
           const isActive = lab.id === currentLab.id;
           return (
             <button
               key={lab.id}
               onClick={() => onSelectLab(lab)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+              className={`h-7 px-3 text-[13px] font-medium rounded-[8px] btn-71 focus-71 transition-colors ${
                 isActive
-                  ? 'bg-sky-600 text-white shadow-sm'
-                  : 'text-neutral-400 hover:text-white hover:bg-neutral-800/60'
+                  ? 'bg-[var(--color-surface-2)] text-[var(--color-ink-strong)] shadow-[var(--shadow-ring)]'
+                  : 'text-[var(--color-ink-subtle)] hover:text-[var(--color-ink-strong)] hover:bg-[var(--color-surface)]'
               }`}
             >
               {lab.title.split(' ')[0]} {lab.domain === 'physics' ? 'Gravity' : lab.domain === 'anatomy' ? 'Heart' : lab.domain === 'circuits' ? 'Circuit' : 'Jet Engine'}
             </button>
           );
         })}
-      </div>
+      </nav>
 
-      {/* Right controls: Grade Level, Audio, Reset, VR */}
+      {/* Right Tool Group: Grade Level, Audio, Reset, VR */}
       <div className="flex items-center space-x-2">
-        {/* Grade level dropdown */}
-        <select
-          value={gradeLevel}
-          onChange={e => onGradeLevelChange(e.target.value as GradeLevel)}
-          className="bg-neutral-900 border border-neutral-800 text-neutral-300 text-xs rounded-lg px-2.5 py-1.5 outline-none focus:border-sky-500 cursor-pointer"
-        >
-          <option value="K-5 (Elementary)">Grade K-5 (Elementary)</option>
-          <option value="6-8 (Middle School)">Grade 6-8 (Middle)</option>
-          <option value="9-12 (High School)">Grade 9-12 (High School)</option>
-          <option value="College / Higher Ed">College / Professional</option>
-        </select>
+        {/* Grade level dropdown (71UI 32px control) */}
+        <div className="relative">
+          <select
+            value={gradeLevel}
+            onChange={e => onGradeLevelChange(e.target.value as GradeLevel)}
+            aria-label="Select student curriculum grade level"
+            className="h-8 pl-3 pr-7 bg-[var(--color-surface-2)] border border-[var(--color-hairline-strong)] text-[var(--color-ink)] text-[13px] font-medium rounded-[10px] appearance-none focus-71 cursor-pointer transition-colors hover:border-[var(--color-control-border)]"
+          >
+            <option value="K-5 (Elementary)">Grades K–5 (Elementary)</option>
+            <option value="6-8 (Middle School)">Grades 6–8 (Middle)</option>
+            <option value="9-12 (High School)">Grades 9–12 (High)</option>
+            <option value="College / Higher Ed">College / Research</option>
+          </select>
+          <ChevronDown className="w-3.5 h-3.5 text-[var(--color-ink-subtle)] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+        </div>
 
-        {/* Audio Toggle */}
+        {/* Audio Toggle (71UI 32px icon button) */}
         <button
           onClick={onToggleMute}
-          title={isMuted ? 'Unmute Procedural Audio' : 'Mute Procedural Audio'}
-          className="p-2 rounded-lg bg-neutral-900/90 border border-neutral-800 text-neutral-300 hover:text-white hover:bg-neutral-800 transition"
+          aria-label={isMuted ? 'Unmute procedural sound effects' : 'Mute procedural sound effects'}
+          title={isMuted ? 'Unmute audio' : 'Mute audio'}
+          className="flex items-center justify-center w-8 h-8 rounded-[10px] bg-[var(--color-surface-2)] border border-[var(--color-hairline)] text-[var(--color-ink)] hover:text-[var(--color-ink-strong)] hover:bg-[var(--color-surface)] btn-71 focus-71 transition-colors"
         >
-          {isMuted ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-sky-400" />}
+          {isMuted ? (
+            <VolumeX className="w-4 h-4 text-[var(--color-on-danger)]" />
+          ) : (
+            <Volume2 className="w-4 h-4 text-[var(--color-primary)]" />
+          )}
         </button>
 
-        {/* Reset Simulation */}
+        {/* Reset Simulation Positions */}
         <button
           onClick={onReset}
-          title="Reset Simulation Positions"
-          className="p-2 rounded-lg bg-neutral-900/90 border border-neutral-800 text-neutral-300 hover:text-white hover:bg-neutral-800 transition"
+          aria-label="Reset simulation kinematic positions"
+          title="Reset positions"
+          className="flex items-center justify-center w-8 h-8 rounded-[10px] bg-[var(--color-surface-2)] border border-[var(--color-hairline)] text-[var(--color-ink)] hover:text-[var(--color-ink-strong)] hover:bg-[var(--color-surface)] btn-71 focus-71 transition-colors"
         >
-          <RotateCcw className="w-4 h-4" />
+          <RotateCcw className="w-3.5 h-3.5" />
         </button>
 
-        {/* WebXR VR Mode Button */}
+        {/* WebXR VR Mode Button (71UI 32px primary CTA) */}
         <button
           onClick={onEnterVR}
-          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-md shadow-sky-600/20 transition active:scale-95"
+          className="flex items-center space-x-1.5 h-8 px-3 rounded-[10px] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-[13px] font-medium btn-71 focus-71 shadow-[var(--shadow-sm)] transition-colors"
         >
-          <Glasses className="w-4 h-4" />
-          <span>{isVRSupported ? 'Enter VR' : 'VR / Headset'}</span>
+          <Glasses className="w-3.5 h-3.5" />
+          <span>{isVRSupported ? 'Enter VR' : 'VR Setup'}</span>
         </button>
       </div>
     </header>

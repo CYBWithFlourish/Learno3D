@@ -326,8 +326,21 @@ export default function App() {
     }
   };
 
+  // Keyboard shortcut: 'H' to toggle dock collapse
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === 'h' || e.key === 'H') {
+        const toggleBtn = document.querySelector('button[aria-label="Toggle Controls"]') as HTMLButtonElement | null;
+        if (toggleBtn) toggleBtn.click();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-neutral-950 font-sans select-none">
+    <div className="relative w-screen h-screen overflow-hidden bg-[var(--color-canvas)] font-sans select-none">
       {/* 1. Header Navigation Bar */}
       <HeaderBar
         currentLab={currentLab}
@@ -341,6 +354,14 @@ export default function App() {
         onEnterVR={() => setIsVRModalOpen(true)}
         isVRSupported={isVRSupported}
       />
+
+      {/* Architectural Blueprint Crosshairs (71UI Architectural Signature Move) */}
+      <div className="absolute top-16 left-4 text-[10px] font-mono text-[var(--color-hairline-strong)] pointer-events-none z-10 opacity-70">
+        + [DATUM 0,0]
+      </div>
+      <div className="absolute top-16 right-4 text-[10px] font-mono text-[var(--color-hairline-strong)] pointer-events-none z-10 opacity-70">
+        + [XR_6DOF]
+      </div>
 
       {/* 2. Isolated WebGL 3D Canvas Mount (100% Unobstructed Center Viewport) */}
       <div
